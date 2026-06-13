@@ -1,15 +1,20 @@
-# 🕷️ Wildberries Parser
+# 🕷️ WB Monitor: Парсер + API + Telegram Bot
 
-Парсер для сбора данных о товарах с Wildberries через внутренний API.
+Автоматизированная система для сбора данных с Wildberries, хранения в PostgreSQL и выдачи результатов через REST API и Telegram-бота.
 
 ## 🛠️ Стек технологий
-- Python 3.12
-- Библиотеки: `curl-cffi`, `psycopg2-binary`
-- База данных: PostgreSQL (в Docker)
-- Инструменты: Docker, Docker Compose
+- **Язык:** Python 3.12
+- **Парсинг:** `curl-cffi` (имитация браузера для обхода защит)
+- **Бэкенд:** FastAPI, Uvicorn
+- **База данных:** PostgreSQL 15
+- **Инфраструктура:** Docker, Docker Compose
+- **Клиент:** `pyTelegramBotAPI`
 
-## 🚀 Как запустить
+## 🚀 Как запустить (за 1 минуту)
 
-1. Установите зависимости:
+Вам не нужно устанавливать Python или базы данных вручную. Всё упаковано в Docker.
+
+1. Откройте файлы `main.py` и `bot.py` и вставьте свои данные вместо заглушек `ВСТАВЬ_СЮДА` (ваши Cookie, Url и токен бота).
+2. Запустите всю систему одной командой:
    ```bash
-   pip install -r requirements.txt
+   docker-compose up --build -d
