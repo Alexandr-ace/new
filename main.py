@@ -3,9 +3,9 @@ import json
 import time
 from database import create_table, save_product 
 
-url = ""
+url = "ВСТАВЬТЕ_URL"
 
-raw_cookie_string = "ВСТАВЬ_СЮДА_СВОИ_AKTUALNYE_COOKIE_ИЗ_БРАУЗЕРА"
+raw_cookie_string = "ВСТАВЬТЕ_КУКИ"
 
 cookies_dict = {}
 if raw_cookie_string and "ВСТАВЬ_СЮДА" not in raw_cookie_string:

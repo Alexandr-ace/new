@@ -1,9 +1,12 @@
 import psycopg2
 from psycopg2 import Error
+import os
 
 # Параметры подключения (те же, что в docker-compose.yml)
+DB_HOST = os.getenv("DB_HOST", "localhost")
+
 DB_CONFIG = {
-    "host": "localhost",
+    "host": DB_HOST, 
     "port": "5432",
     "database": "wb_products",
     "user": "parser_user",
@@ -96,5 +99,45 @@ def get_all_products():
         return []
     finally:
         if connection:
+            cursor.close()
+            connection.close()
+
+
+def get_all_products_as_dict():
+    """Получает все товары из базы и возвращает их в виде списка словарей"""
+    try:
+        connection = psycopg2.connect(**DB_CONFIG)
+        cursor = connection.cursor()
+        
+        # Забираем все поля
+        cursor.execute("""
+            SELECT id, wb_id, name, brand, supplier, size, price, old_price, rating, feedbacks, created_at 
+            FROM products 
+            ORDER BY created_at DESC
+        """)
+        
+        rows = cursor.fetchall()
+        
+        # Получаем названия колонок из описания курсора
+        col_names = [desc[0] for desc in cursor.description]
+        
+        # Превращаем каждый кортеж (row) в словарь, где ключи - это названия колонок
+        products_list = []
+        for row in rows:
+            product_dict = dict(zip(col_names, row))
+            
+            # Преобразуем datetime в строку, чтобы JSON мог это переварить
+            if product_dict.get('created_at'):
+                product_dict['created_at'] = product_dict['created_at'].strftime("%Y-%m-%d %H:%M:%S")
+                
+            products_list.append(product_dict)
+            
+        return products_list
+        
+    except Error as e:
+        print(f"❌ Ошибка при получении товаров: {e}")
+        return []
+    finally:
+        if 'connection' in locals() and connection:
             cursor.close()
             connection.close()

@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+  # Сервис 1: База данных (без изменений)
   db:
     image: postgres:15-alpine
     container_name: wb_parser_db
@@ -13,6 +14,18 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  # Сервис 2: Наше FastAPI приложение (НОВОЕ!)
+  api:
+    build: .               # Говорит Docker'у собрать образ из Dockerfile в текущей папке
+    container_name: wb_parser_api
+    restart: always
+    ports:
+      - "8000:8000"        # Пробрасываем порт 8000 на твой Mac
+    environment:
+      - DB_HOST=db         # Передаем переменную окружения! Теперь код знает, что база называется "db"
+    depends_on:
+      - db                 # Гарантирует, что база данных запустится ПЕРЕД API
 
 volumes:
   postgres_data:
